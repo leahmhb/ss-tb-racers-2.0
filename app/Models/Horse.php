@@ -46,5 +46,5 @@ class Horse extends Model{
     'notes'
     );
 
- 
+
 }//end Horse

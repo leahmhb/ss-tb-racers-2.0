@@ -1,16 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models as Models;
+use App\Models as Model;
 
 use Carbon\Carbon;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class Race_Entries extends Base{
+class Race_Entries extends Controller{
 
 /*
 |--------------------------------------------------------------------------
@@ -26,36 +22,36 @@ public function entry_table($race = false, $placing = false, $horse = false, $ow
     'race' => $race,
     'placing' => $placing,
     'horse' => $horse,
-    'owner' => $owner,     
+    'owner' => $owner,
     'domain' => Race_Entries::entriesTableDomain()
     ]);
 }
 
 public function entry_table_validate(){
-  $data = Base::trimWhiteSpace($_POST);
+  $data = $this->trimWhiteSpace($_POST);
 
   return redirect()->route('entry_table', [
     'race' => $data['race'],
     'placing' => $data['placing'],
     'horse' => $data['horse'],
-    'owner' => $data['owner']  
+    'owner' => $data['owner']
     ]);
 }
 
 public function entriesTableDomain(){
   $domain = [];
-  $domain['person'] = Models\Person::select('id', 'username')->orderBy('username', 'asc')->get();
-  $races = Models\Race::orderBy('name')->get()->toArray();
-  $series = Models\Domain_Value::where('domain', 'RACE_SERIES')->get();  
-  $grades = Models\Domain_Value::where('domain', 'GRADE')->get();  
+  $domain['person'] = Model\Person::select('id', 'username')->orderBy('username', 'asc')->get();
+  $races = Model\Race::orderBy('name')->get()->toArray();
+  $series = Model\Domain_Value::where('domain', 'RACE_SERIES')->get();
+  $grades = Model\Domain_Value::where('domain', 'GRADE')->get();
 
-  foreach($races as $i=>$r){   
-    $races[$i]['series'] = Base::getSeriesValue($series, $r['series']);      
-    $races[$i]['surface'] = ($r['surface'] == 41 ? 'Dirt' : 'Turf'); 
-    $races[$i]['grade'] = Base::getGrade($grades, $r['grade']);  
+  foreach($races as $i=>$r){
+    $races[$i]['series'] = $this->getSeriesValue($series, $r['series']);
+    $races[$i]['surface'] = ($r['surface'] == 41 ? 'Dirt' : 'Turf');
+    $races[$i]['grade'] = $this->getGrade($grades, $r['grade']);
   }
 
-  $domain['horses']  = Models\Horse::select('id', 'call_name')->orderBy('call_name')->get()->toArray();
+  $domain['horses']  = Model\Horse::select('id', 'call_name')->orderBy('call_name')->get()->toArray();
   $domain['races'] = $races;
   return $domain;
 }
@@ -67,15 +63,15 @@ public function entriesTableDomain(){
 */
 
 public function entry($horse_id = false, $entry_id = false, $validate = false){
-  $entry  = Models\Race_Entry::where('id', $entry_id)->first();
+  $entry  = Model\Race_Entry::where('id', $entry_id)->first();
 
   if($entry){
-    $horse = Models\Horse::where('id', $horse_id)->first();
-    
+    $horse = Model\Horse::where('id', $horse_id)->first();
+
     if(!Users::verifyOwner($horse)){
       abort(401, 'You do not own this horse.');
-    }   
-  } else { 
+    }
+  } else {
     $entry['id'] = '';
     $entry['race_id'] = '';
     $entry['horse_id'] = '';
@@ -91,14 +87,14 @@ public function entry($horse_id = false, $entry_id = false, $validate = false){
   }
 
   return view('forms.entry_page', [
-    'options' => Base::getRaceDomain(Users::getPerson()['id']),
-    'entry' => $entry, 
+    'options' => $this->getRaceDomain(Users::getPerson()['id']),
+    'entry' => $entry,
     'validate' => $validate
     ]);
 }
 
 public function entry_validate(){
-  $data = Base::trimWhiteSpace($_POST);
+  $data = $this->trimWhiteSpace($_POST);
   $entry = Race_Entries::createEntry($data);
   return Race_Entries::entry(false, false, true);
 }
@@ -110,8 +106,8 @@ public function entry_validate(){
 */
 
 public function createEntry($data){
-  $entry = Models\Race_Entry::firstOrNew([
-    'horse_id' => $data['horse_id'], 
+  $entry = Model\Race_Entry::firstOrNew([
+    'horse_id' => $data['horse_id'],
     'race_id' => $data['race_id']
     ]);
 
@@ -128,19 +124,19 @@ public function createEntry($data){
 
 
 public function remove_entry($entry_id){
-  $entry = Models\Race_Entry::find($entry_id);
+  $entry = Model\Race_Entry::find($entry_id);
 
-  $horse = Models\Horse::find($entry->horse_id);
+  $horse = Model\Horse::find($entry->horse_id);
   if(!Users::verifyOwner($horse)){
     abort(401, 'You do not own this horse.');
-  }   
+  }
 
   if(empty($_POST)){
-    $entry['horse'] = Models\Horse::select('call_name')->where('id', $entry->horse_id)->first();
-    $entry['race'] = Models\Race::select('name', 'series')->where('id', $entry->race_id)->first();
+    $entry['horse'] = Model\Horse::select('call_name')->where('id', $entry->horse_id)->first();
+    $entry['race'] = Model\Race::select('name', 'series')->where('id', $entry->race_id)->first();
 
     return view('pages.remove_entry', [
-      'entry' => $entry   
+      'entry' => $entry
       ]);
   } else {
     $entry->delete();
@@ -149,11 +145,11 @@ public function remove_entry($entry_id){
 }
 
 public function tableData($race = false, $placing = false, $horse = false, $owner = false){
-  $entries = Models\Race_Entry::orderBy('placing');
+  $entries = Model\Race_Entry::orderBy('placing');
   $domain = Race_Entries::entriesTableDomain();
 
-  if($owner && $owner != '0'){ 
-    $horses = array_values(Models\Horse::select('id')
+  if($owner && $owner != '0'){
+    $horses = array_values(Model\Horse::select('id')
       ->where('owner', $owner)
       ->get()->toArray());
     $entries->whereIn('horse_id', $horses);
@@ -175,7 +171,7 @@ public function tableData($race = false, $placing = false, $horse = false, $owne
 
     $entries = $entries->get();
 
-    foreach($entries as $i=>$e){ 
+    foreach($entries as $i=>$e){
       $ordinal_place =  $e['placing'];
 
       if($ordinal_place == 0){
@@ -184,17 +180,17 @@ public function tableData($race = false, $placing = false, $horse = false, $owne
 
       $entries[$i]['placing'] = $ordinal_place;
 
-      $horse_tmp = Models\Horse::select('call_name', 'id','stall_path','owner')->where('id', $e['horse_id'])->first();
+      $horse_tmp = Model\Horse::select('call_name', 'id','stall_path','owner')->where('id', $e['horse_id'])->first();
 
       $entries[$i]['horse_name'] = $horse_tmp['call_name'];
       $entries[$i]['stall_path'] = $horse_tmp->stall_path;
 
-      $race_tmp = Base::getRace($domain['races'], $e['race_id']);     
+      $race_tmp = $this->getRace($domain['races'], $e['race_id']);
 
       $entries[$i]['race_name'] = $race_tmp['name'];
       $entries[$i]['race_distance'] = $race_tmp['distance'];
       $entries[$i]['race_randt'] = $race_tmp['ran_dt'];
-      $entries[$i]['url'] = $race_tmp['url'];     
+      $entries[$i]['url'] = $race_tmp['url'];
 
       $entries[$i]['race_grade'] = $race_tmp['grade'];
       $entries[$i]['race_surface'] = $race_tmp['surface'];
@@ -204,7 +200,7 @@ public function tableData($race = false, $placing = false, $horse = false, $owne
 
       if(Users::verifyOwner($horse_tmp->toArray())){
         $entries[$i]['user_pl'] = 'true';
-      }      
+      }
     }
   }
 
@@ -227,12 +223,12 @@ public static function getPlacingsData($placings){
       if($place == $curr_place){
         $results[$i][1] += 1;
       }
-    }    
+    }
   }
 
   foreach($results as $i=>$r){
     if($results[$i][0] != 'TBA'){
-      $results[$i][0] = Base::ordinal($results[$i][0]);
+      $results[$i][0] = Controller::ordinal($results[$i][0]);
     }
 
     if($results[$i][0] == 0){
@@ -247,7 +243,7 @@ public static function getEntryRecords($horses){
   $results = [];
   $records = [];
   foreach($horses as $h){
-    $records = $entries = Models\Race_Entry::where('horse_id', $h['id'])
+    $records = $entries = Model\Race_Entry::where('horse_id', $h['id'])
     ->orderBy('placing')
     ->get();
 

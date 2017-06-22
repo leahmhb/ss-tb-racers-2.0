@@ -1,17 +1,16 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models as Models;
+use App\Models as Model;
 use Illuminate\Routing\Controller as BaseController;
 use Auth;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
-
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
-class Users extends Base{
+class Users extends Controller{
 
 /*
 |--------------------------------------------------------------------------
@@ -20,7 +19,7 @@ class Users extends Base{
 */
 
 public static function user_table_data(){
-  $users = Models\User::select('id', 'name')->orderBy('name')->get()->toArray();
+  $users = Model\User::select('id', 'name')->orderBy('name')->get()->toArray();
   return $users;
 }
 
@@ -31,10 +30,10 @@ public static function user_table_data(){
 */
 
 public function user($user_id, $validate = false){
-  $user = Models\User::where('id', $user_id)->first();
-  $persons = Models\Person::select('id','username')->orderBy('username')->get();
+  $user = Model\User::where('id', $user_id)->first();
+  $persons = Model\Person::select('id','username')->orderBy('username')->get();
   $title = 'Edit ' . $user->name;
-  $person_id = Models\Person::where('user_id', $user->id)->first()['id'];
+  $person_id = Model\Person::where('user_id', $user->id)->first()['id'];
 
   return view('forms.user_page', [
     'user' => $user,
@@ -46,7 +45,7 @@ public function user($user_id, $validate = false){
 }
 
 public function user_validate(){
- $data = Base::trimWhiteSpace($_POST);
+ $data = $this->trimWhiteSpace($_POST);
  $user = Users::editUser($data);
  return redirect()->route('user', ['validate' => true]);
 }
@@ -96,9 +95,9 @@ protected static function checkOwner($user, $owner_id = false, $horse_id = false
     if($horse_id && $owner_id){
      /* Check if User is an Owner of THIS horse. Field is MANUALLY set. */
      $id = $user->id;
-     $person = Models\Person::where('user_id', $id)->first();
+     $person = Model\Person::where('user_id', $id)->first();
      /* Owner is editing their existing horse. */
-     $horse = Models\Horse::select('owner')->where('id', $horse_id)->where('owner', $owner_id)->first();
+     $horse = Model\Horse::select('owner')->where('id', $horse_id)->where('owner', $owner_id)->first();
      /* Check match between logged in User and Horse's owner */
      return $person['id'] == $horse['owner'];
    }
@@ -158,7 +157,7 @@ public static function getPermissionLevel(){
 
 public function editUser($data){
 
- $user = Models\User::where(['id' => $data['id']])->first();
+ $user = Model\User::where(['id' => $data['id']])->first();
 
  $user->name = (!empty($data['name']) ? $data['name'] : '');
  $user->isAdmin = (!empty($data['isAdmin']) ? $data['isAdmin'] : '');
@@ -166,7 +165,7 @@ public function editUser($data){
  $user->isOwner = (!empty($data['isOwner']) ? $data['isOwner'] : '');
  $user->save();
 
- $person = Models\Person::where('id', $data['person'])->first();
+ $person = Model\Person::where('id', $data['person'])->first();
  $person->user_id = $user['id'];
  $person->save();
 
@@ -174,7 +173,7 @@ public function editUser($data){
 }
 
 public static function getUsers(){
-  return Models\User::select('id', 'name')->get()->toArray();
+  return Model\User::select('id', 'name')->get()->toArray();
 }
 
 public static function getPerson(){
@@ -188,7 +187,7 @@ public static function getPerson(){
  if($user){
   $id = $user->id;
 
-  $person = Models\Person::where('user_id', $id)->first();
+  $person = Model\Person::where('user_id', $id)->first();
 
   if($person){
     $person = $person->toArray();

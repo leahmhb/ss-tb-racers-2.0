@@ -1,14 +1,10 @@
-<?php  
+<?php
 namespace App\Http\Controllers;
-use App\Models as Models;
+use App\Models as Model;
 use DB;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class Person extends Base{
+class Person extends Controller{
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +13,7 @@ class Person extends Base{
 */
 
 public static function person_table_data(){
-  $person = Models\Person::orderBy('username')->get()->toArray();
+  $person = Model\Person::orderBy('username')->get()->toArray();
   return $person;
 }
 
@@ -27,25 +23,25 @@ public static function person_table_data(){
 |--------------------------------------------------------------------------
 */
 
-public function person($person_id = false){   
+public function person($person_id = false){
   $users = [];
   $title = 'Create Person';
 
-  $person = Models\Person::where('id', $person_id)->first();  
+  $person = Model\Person::where('id', $person_id)->first();
 
   if($person){
     $title = 'Edit '. $person->username;
   }
 
   return view('forms.person_page', [
-    'person' => $person, 
+    'person' => $person,
     'title' => $title,
     'validate' => false
     ]);
 }
 
 public function person_validate(){
-  $data = Base::trimWhiteSpace($_POST);
+  $data = $this->trimWhiteSpace($_POST);
   $person_id = Person::createPerson($data);
   return redirect()->route('people_tables');
 }
@@ -57,18 +53,18 @@ public function person_validate(){
 */
 
 public function stable($person_id){
-  $person = Models\Person::where('id', $person_id)->first();
-  $horses = Horses::tableData($person_id, false, false, false);   
+  $person = Model\Person::where('id', $person_id)->first();
+  $horses = Horses::tableData($person_id, false, false, false);
   $placingsData = Race_Entries::getPlacingsData(Race_Entries::getEntryRecords($horses));
   $gradesData = Person::getGradesData($horses);
 
   return view('pages.stable', [
-    'person' => $person, 
+    'person' => $person,
     'horses' => $horses,
     'type' => 'stable',
     'placingsData' => $placingsData,
     'gradesData' => $gradesData,
-    'domain' => Base::getHorseDomain()
+    'domain' => $this->getHorseDomain()
     ]);
 }
 
@@ -79,7 +75,7 @@ public function stable($person_id){
 */
 
 public function getGradesData($horses){
-  $grades = Models\Domain_Value::where('domain', 'GRADE')->whereNotIn('value', ['All'])->get()->toArray();
+  $grades = Model\Domain_Value::where('domain', 'GRADE')->whereNotIn('value', ['All'])->get()->toArray();
 
   $results = [];
 
@@ -88,7 +84,7 @@ public function getGradesData($horses){
   }
 
   foreach($horses as $h){
-    foreach($results as $i=>$r){     
+    foreach($results as $i=>$r){
 
       if($h['grade'] == $i){
         $results[$i][1] += 1;
@@ -107,7 +103,7 @@ public function getGradesData($horses){
 */
 
 public function createPerson($data){
- $person = Models\Person::firstOrNew(['id' => $data['id']]);
+ $person = Model\Person::firstOrNew(['id' => $data['id']]);
  $person->username = (!empty($data['username']) ? $data['username'] : '');
  $person->stable_name = (!empty($data['stable_name']) ? $data['stable_name'] : '');
  $person->stable_prefix = (!empty($data['stable_prefix']) ? $data['stable_prefix'] : '');
@@ -117,14 +113,14 @@ public function createPerson($data){
 }
 
 public function remove_person($person_id){
-  $person = Models\Person::find($person_id);
+  $person = Model\Person::find($person_id);
 
-  $horses = Models\Horse::select('call_name', 'owner')->where('owner', $person_id)->get();
+  $horses = Model\Horse::select('call_name', 'owner')->where('owner', $person_id)->get();
 
   if(empty($_POST)){
     return view('pages.remove_person', [
       'person' => $person,
-      'horses' => $horses   
+      'horses' => $horses
       ]);
   } else {
 

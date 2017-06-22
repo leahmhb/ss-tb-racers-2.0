@@ -15,4 +15,9 @@ class Person extends Model{
     'stable_prefix',
     'racing_colors'
     );
+
+  public function user()
+    {
+        return $this->belongsTo('Model\User');
+    }
 }

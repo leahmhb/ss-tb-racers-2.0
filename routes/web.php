@@ -12,19 +12,19 @@
 
 Route::get('/', [
   'as' => 'index',
-  'uses' => 'Base@index']);
+  'uses' => 'Controller@index']);
 
 Route::get('/credits', [
   'as' => 'credits',
-  'uses' => 'Base@credits']);
+  'uses' => 'Controller@credits']);
 
 Route::get('/contact', [
   'as' => 'contact',
-  'uses' => 'Base@contact']);
+  'uses' => 'Controller@contact']);
 
-Route::get('/people-tables', [
-  'as' => 'people_tables',
-  'uses' => 'Base@people_tables']);
+Route::get('/person-table', [
+  'as' => 'person_table',
+  'uses' => 'Controller@person_table']);
 
 Route::get('/stall/{horse_id}', [
   'as' => 'stall',
@@ -44,31 +44,31 @@ Route::get('/ancestors/{horse_id}', [
 
 Route::get('/guide_getting_started', [
   'as' => 'guide_getting_started',
-  'uses' => 'Base@guide_getting_started']);
+  'uses' => 'Controller@guide_getting_started'])->name('guide_getting_started');
 
 Route::get('/guide_breeding', [
   'as' => 'guide_breeding',
-  'uses' => 'Base@guide_breeding']);
+  'uses' => 'Controller@guide_breeding']);
 
 Route::get('/guide_colors', [
   'as' => 'guide_colors',
-  'uses' => 'Base@guide_colors']);
+  'uses' => 'Controller@guide_colors']);
 
 Route::get('/guide_stats', [
   'as' => 'guide_stats',
-  'uses' => 'Base@guide_stats']);
+  'uses' => 'Controller@guide_stats']);
 
 Route::get('/guide_abilities', [
   'as' => 'guide_abilities',
-  'uses' => 'Base@guide_abilities']);
+  'uses' => 'Controller@guide_abilities']);
 
 Route::get('/guide_form', [
   'as' => 'guide_form',
-  'uses' => 'Base@guide_form']);
+  'uses' => 'Controller@guide_form']);
 
 Route::post('/guide_form', [
   'as' => 'guide_form_result',
-  'uses' => 'Base@guide_form_result']);
+  'uses' => 'Controller@guide_form_result']);
 
 /*--------------------------------------------------------------------------
 |------------------------------Form Routes
@@ -78,7 +78,7 @@ Route::get('/person/{person_id?}', [
   'as' => 'person',
   'uses' => 'Person@person']);
 
-Route::get('/horse/{horse_id?}/{form_type?}', [
+Route::get('/horse/{horse_id?}', [
   'as' => 'horse',
   'uses' => 'Horses@horse']);
 
@@ -89,10 +89,6 @@ Route::get('/race/{race_id?}', [
 Route::get('/entry/{horse_id?}/{entry_id?}', [
   'as' => 'entry',
   'uses' => 'Race_Entries@entry']);
-
-Route::get('/lineage/{relationship?}/{horse_id?}', [
-  'as' => 'lineage',
-  'uses' => 'Lineages@lineage']);
 
 /*--------------------------------------------------------------------------
 |------------------------------Table Routes
@@ -175,17 +171,6 @@ Route::group(['middleware' => 'owner'], function () {
     'as' => 'remove_entry',
     'uses' => 'Race_Entries@remove_entry']);
 
-  Route::post('/lineage/{relationship?}/{horse_id?}', [
-    'as' => 'lineage_validate',
-    'uses' => 'Lineages@lineage_validate']);
-
-  Route::get('/remove-lineage/{horse_id}', [
-    'as' => 'remove_lineage',
-    'uses' => 'Lineages@remove_lineage']);
-
-  Route::post('/remove-lineage/{horse_id}', [
-    'as' => 'remove_lineage',
-    'uses' => 'Lineages@remove_lineage']);
 });
 
 /*
@@ -237,9 +222,5 @@ Route::group(['middleware' => 'admin'], function () {
 | Route Controllers--------------------------------------------------------
 |--------------------------------------------------------------------------
 */
-Route::resource(
-  'auth', 'Auth\AuthController'
-  );
-Route::resource(
-  'password', 'Auth\PasswordController'
-  );
+
+Auth::routes();

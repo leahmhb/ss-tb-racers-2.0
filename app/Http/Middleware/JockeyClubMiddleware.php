@@ -1,11 +1,11 @@
-<?php 
+<?php
 namespace App\Http\Middleware;
 use Illuminate\Http\RedirectResponse;
 
 
 use Closure;
 
-class JockeyClubMiddleware extends Authenticate{
+class JockeyClubMiddleware{
 
   /**
    * Handle an incoming request.
@@ -26,4 +26,4 @@ class JockeyClubMiddleware extends Authenticate{
     return abort(401);
 }
 
-} 
+}

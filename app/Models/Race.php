@@ -23,7 +23,7 @@ class Race extends Model{
     'final_time'
     );
 
-  public function getRanDtAttribute($date){ 
+  public function getRanDtAttribute($date){
     $dt = Carbon::parse($date);
     return $dt->year . '-' . $dt->month . '-' . $dt->day;
   }

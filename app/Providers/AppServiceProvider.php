@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Providers;
-
+use View;
+use App\Http\Controllers as Controllers;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+         View::share('nav', Controllers\Controller::nav());
     }
 
     /**

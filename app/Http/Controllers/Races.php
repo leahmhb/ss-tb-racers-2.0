@@ -1,16 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models as Models;
+use App\Models as Model;
 
 use Carbon\Carbon;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class Races extends Base{
+
+class Races extends Controller{
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +31,7 @@ public function race_table($grade = false, $surface = false, $series = false, $d
 }
 
 public function race_table_validate(){
-  $data = Base::trimWhiteSpace($_POST);
+  $data = $this->trimWhiteSpace($_POST);
 
   return redirect()->route('race_table',     [
     'grade' => $data['grade'],
@@ -47,9 +45,9 @@ public function race_table_validate(){
 
 public function racesTableDomain(){
   $domain = [];
-  $domain['series'] = Models\Domain_Value::where('domain', 'RACE_SERIES')->get()->toArray();   
-  $domain['surface'] = Models\Domain_Value::where('domain', 'SURFACE')->get()->toArray();
-  $domain['grade'] = Models\Domain_Value::where('domain', 'GRADE')->get()->toArray();   
+  $domain['series'] = Model\Domain_Value::where('domain', 'RACE_SERIES')->get()->toArray();
+  $domain['surface'] = Model\Domain_Value::where('domain', 'SURFACE')->get()->toArray();
+  $domain['grade'] = Model\Domain_Value::where('domain', 'GRADE')->get()->toArray();
   return $domain;
 }
 
@@ -60,29 +58,29 @@ public function racesTableDomain(){
 */
 
 public function race($race_id = false, $validate = false){
-  $race = Models\Race::where('id', $race_id)->first();
+  $race = Model\Race::where('id', $race_id)->first();
   $title = 'Create Race';
 
   if($race){
-    $title = 'Edit '. $race->name; 
-    if(!Users::verifyJockeyClub()){     
-      abort(401, 'You do not have Jockey Club permissions.');      
+    $title = 'Edit '. $race->name;
+    if(!Users::verifyJockeyClub()){
+      abort(401, 'You do not have Jockey Club permissions.');
     }
   }
 
   return view('forms.race_page', [
-    'race' => $race, 
-    'options' => Base::getRaceDomain('%'), 
+    'race' => $race,
+    'options' => $this->getRaceDomain('%'),
     'title' => $title,
     'validate' => $validate
     ]);
 }
 
 public function race_validate(){
-  $data = Base::trimWhiteSpace($_POST);
+  $data = $this->trimWhiteSpace($_POST);
   $race = Races::createRace($data);
 
-  if($data['id'] != 0){    
+  if($data['id'] != 0){
     return redirect()->route('race_table');
   }
 
@@ -97,7 +95,7 @@ public function race_validate(){
 
 
 public function createRace($data){
-  $race = Models\Race::firstOrNew([
+  $race = Model\Race::firstOrNew([
     'id' => $data['id']
     ]);
 
@@ -125,24 +123,24 @@ public function createRace($data){
 
 
 public function remove_race($race_id){
-  $race = Models\Race::find($race_id); 
+  $race = Model\Race::find($race_id);
 
   if(empty($_POST)){
-    $entries = Models\Race_Entry::where('race_id',$race_id)->first();
+    $entries = Model\Race_Entry::where('race_id',$race_id)->first();
     return view('pages.remove_race', [
       'race' => $race,
-      'entries' => $entries   
+      'entries' => $entries
       ]);
   } else {
     $race->delete();
-    $entries = Models\Race_Entry::where('race_id', $race_id);
+    $entries = Model\Race_Entry::where('race_id', $race_id);
     $entries->delete();
     return redirect()->route('race_table');
   }
 }
 
 public function tableData($grade = false, $surface = false, $series = false, $distance = false, $year = false){
-  $races = Models\Race::orderBy('name', 'asc');
+  $races = Model\Race::orderBy('name', 'asc');
   $domain = Races::racesTableDomain();
 
 
@@ -167,13 +165,13 @@ public function tableData($grade = false, $surface = false, $series = false, $di
   }
 
   if($races){
-    $races = $races->get(); 
-    foreach($races as $i=>$r){ 
-      $races[$i]['grade'] = Base::getGrade($domain['grade'], $r['grade']);
-      $races[$i]['surface'] = ($r['surface'] == 41 ? 'Dirt' : 'Turf');    
+    $races = $races->get();
+    foreach($races as $i=>$r){
+      $races[$i]['grade'] = $this->getGrade($domain['grade'], $r['grade']);
+      $races[$i]['surface'] = ($r['surface'] == 41 ? 'Dirt' : 'Turf');
 
       if($r['series'] != 44){
-        $races[$i]['series'] = Base::getSeriesValue($domain['series'], $r['series']);
+        $races[$i]['series'] = $this->getSeriesValue($domain['series'], $r['series']);
       } else {
         $races[$i]['series'] = '';
       }
@@ -182,7 +180,7 @@ public function tableData($grade = false, $surface = false, $series = false, $di
 
       if(Users::verifyJockeyClub()){
         $races[$i]['user_pl'] = 'true';
-      }   
+      }
     }
   }
 

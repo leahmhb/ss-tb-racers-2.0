@@ -5,76 +5,69 @@
         <span class="sr-only">Toggle navigation</span>
         <i class="fa fa-white fa-bars fa-lg"></i>
       </button>
-      <a class="navbar-brand" href="{{ URL::route('index') }}">SS TB Racers</a>
+      <a class="navbar-brand" href="{{ URL::route('index') }}">
+        {{ config('app.name', 'SS TB Racers') }}
+      </a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">  
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            Guides
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu"> 
-            <li><a href="{{ URL::route('guide_getting_started') }}">Getting Started</a></li> 
-            <li><a href="{{ URL::route('guide_breeding') }}">Breeding</a></li> 
-            <li><a href="{{ URL::route('guide_colors') }}">Colors</a></li> 
-            <li><a href="{{ URL::route('guide_stats') }}">Stats</a></li> 
-            <li><a href="{{ URL::route('guide_abilities') }}">Abilities</a></li> 
-            <li><a href="{{ URL::route('guide_form') }}">Entry Form</a></li> 
-          </ul>
-        </li> 
-        <li><a href="{{ URL::route('people_tables') }}">People</a></li>
-        <li><a href="{{ URL::route('horse_table') }}">Horses</a></li> 
-        <li><a href="{{ URL::route('lineage_table') }}">Lineages</a></li>
-        <li><a href="{{ URL::route('race_table') }}">Races</a></li> 
-        <li><a href="{{ URL::route('entry_table') }}">Entries</a></li> 
-      </ul>
+      <ul class="nav navbar-nav">
+       @foreach ($nav['mainbar'] as $key=>$val)
+       @if($val['dropdown'] == 'true')
+       <li class="dropdown">
+         <a href="{{ $val['url'] }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+           <i class="{{ $val['icon'] }}"></i>
+           {{ $val['label'] }}
+           <span class="caret"></span>
+         </a>
+         <ul class="dropdown-menu">
+          @foreach($nav['subbar'][$key] as $k=>$v)
+          <li>
+            <a href="{{ $v['url'] }}">
+              <i class="{{ $v['icon'] }}"></i>
+              {{ $v['label'] }}
+            </a>
+          </li>
+          @endforeach
+        </ul>
+      </li>
+      @else
+      <li>
+        <a href="{{ $val['url'] }}">
+          <i class="{{ $val['icon'] }}"></i>
+          {{ $val['label'] }}
+        </a>
+      </li>
+      @endif
+      @endforeach
+    </ul>
 
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            Misc
-            <span class="caret"></span>
+    <ul class="nav navbar-nav navbar-right">
+      <!-- Authentication Links -->
+      @if (Auth::guest())
+      <li><a href="{{ route('login') }}">Login</a></li>
+      <li><a href="{{ route('register') }}">Register</a></li>
+      @else
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+          {{ Auth::user()->name }} <span class="caret"></span>
+        </a>
+
+        <ul class="dropdown-menu" role="menu">
+          <li>
+            <a href="{{ route('logout') }}"
+            onclick="event.preventDefault();
+            document.getElementById('logout-form').submit();">
+            Logout
           </a>
-          <ul class="dropdown-menu">  
-            <li><a href="{{ URL::route('contact') }}">Contact</a></li>
-            <li><a href="{{ URL::route('credits') }}">Credits</a></li>       
-          </ul>
-        </li> 
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            Forms
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu"> 
-            <li><a href="{{ URL::route('person') }}">Person</a></li>    
-            <li><a href="{{ URL::route('horse') }}">Horse</a></li> 
-            <li><a href="{{ URL::route('horse', ['0', 'Basic']) }}">Basic Horse</a></li> 
-            <li><a href="{{ URL::route('lineage') }}">Lineage</a></li>                 
-            <li><a href="{{ URL::route('race') }}">Race</a></li>      
-            <li><a href="{{ URL::route('entry') }}">Entry</a></li>  
-          </ul>
-        </li> 
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            @if (!Auth::guest())
-            {{ Auth::user()->name }}
-            @else
-            User
-            @endif
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu"> 
-            @if (Auth::guest())
-            <li><a href="/auth/register">Register</a></li>       
-            <li><a href="/auth/login">Login</a></li>
-            @endif
-            @if (!Auth::guest())
-            <li><a href="/auth/logout">Logout</a></li>
-            @endif
-          </ul>
-        </li> 
+
+          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            {{ csrf_field() }}
+          </form>
+        </li>
       </ul>
-    </div>
-  </div>
+    </li>
+    @endif
+  </ul>
+</div>
+</div>
 </nav>

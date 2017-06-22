@@ -1,11 +1,11 @@
-<?php 
+<?php
 namespace App\Http\Middleware;
 use Illuminate\Http\RedirectResponse;
 
 
 use Closure;
 
-class AdminMiddleware extends Authenticate{
+class AdminMiddleware{
 
 	/**
 	 * Handle an incoming request.
@@ -26,4 +26,4 @@ class AdminMiddleware extends Authenticate{
     return abort(401);
 }
 
-} 
+}
