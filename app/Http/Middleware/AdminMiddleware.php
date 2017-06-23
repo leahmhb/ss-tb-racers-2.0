@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Middleware;
 use Illuminate\Http\RedirectResponse;
-
+use Illuminate\Support\Facades\Auth;
 
 use Closure;
 
@@ -15,7 +15,11 @@ class AdminMiddleware{
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next)	{
-    if ($this->auth->guest()) {
+/*    if ($this->auth->guest()) {
+     return abort(401);
+   }
+*/
+   if(!Auth::check()){
      return abort(401);
    }
 
@@ -23,7 +27,7 @@ class AdminMiddleware{
     return $next($request);
   }
 
-    return abort(401);
+  return abort(401);
 }
 
 }

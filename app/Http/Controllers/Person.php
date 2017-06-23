@@ -24,6 +24,7 @@ public static function person_table_data(){
 */
 
 public function person($person_id = false){
+  $user = [];
   $users = [];
   $title = 'Create Person';
 
@@ -31,11 +32,16 @@ public function person($person_id = false){
 
   if($person){
     $title = 'Edit '. $person->username;
+    $user = Model\User::where('id', $person->user_id)->first();
   }
+
+  $users = Model\User::select('id','name')->orderBy('name')->get();
 
   return view('forms.person_page', [
     'person' => $person,
     'title' => $title,
+    'user' => $user,
+    'users' => $users,
     'validate' => false
     ]);
 }
