@@ -57,10 +57,8 @@ class Kernel extends HttpKernel
     'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
     'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     /* CUSTOM */
-    'admin' => 'App\Http\Middleware\AdminMiddleware',
-    'jockey_club' => 'App\Http\Middleware\JockeyClubMiddleware',
-    'owner' => 'App\Http\Middleware\OwnerMiddleware',
-    'user' => 'App\Http\Middleware\Authenticate',
-    'guest' => 'App\Http\Middleware\RedirectIfAuthenticated',
+    'admin' => \App\Http\Middleware\AdminMiddleware::class,
+    'jockey_club' => \App\Http\Middleware\JockeyClubMiddleware::class,
+    'owner' => \App\Http\Middleware\OwnerMiddleware::class
     ];
 }

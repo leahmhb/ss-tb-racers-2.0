@@ -12,6 +12,7 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
        @foreach ($nav['mainbar'] as $key=>$val)
+       @if($val['visible'] == 'true')
        @if($val['dropdown'] == 'true')
        <li class="dropdown">
          <a href="{{ $val['url'] }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -38,6 +39,7 @@
         </a>
       </li>
       @endif
+      @endif
       @endforeach
     </ul>
 
@@ -48,7 +50,7 @@
       <li><a href="{{ route('register') }}">Register</a></li>
       @else
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+      <a href="/stable/{{ $nav['person']['id'] }}" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
           {{ Auth::user()->name }} <span class="caret"></span>
         </a>
 

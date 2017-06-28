@@ -24,8 +24,6 @@ public static function person_table_data(){
 */
 
 public function person($person_id = false){
-  $user = [];
-  $users = [];
   $title = 'Create Person';
 
   $person = Model\Person::where('id', $person_id)->first();
@@ -37,7 +35,7 @@ public function person($person_id = false){
 
   $users = Model\User::select('id','name')->orderBy('name')->get();
 
-  return view('forms.person_page', [
+  return view('pages.person_user', [
     'person' => $person,
     'title' => $title,
     'user' => $user,
@@ -101,7 +99,6 @@ public function getGradesData($horses){
   return json_encode(array_values($results));
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | ------------------------------Utility Controls
@@ -114,7 +111,16 @@ public function createPerson($data){
  $person->stable_name = (!empty($data['stable_name']) ? $data['stable_name'] : '');
  $person->stable_prefix = (!empty($data['stable_prefix']) ? $data['stable_prefix'] : '');
  $person->racing_colors = (!empty($data['racing_colors']) ? $data['racing_colors'] : '');
+ $person->user_id = $user['id'];
  $person->save();
+
+ $user = Model\User::where(['id' => $data['id']])->first();
+ $user->name = (!empty($data['name']) ? $data['name'] : '');
+ $user->isAdmin = (!empty($data['isAdmin']) ? $data['isAdmin'] : '');
+ $user->isJockeyClub = (!empty($data['isJockeyClub']) ? $data['isJockeyClub'] : '');
+ $user->isOwner = (!empty($data['isOwner']) ? $data['isOwner'] : '');
+ $user->save();
+
  return $person;
 }
 
@@ -136,5 +142,7 @@ public function remove_person($person_id){
   }
 
 }
+
+
 
 }

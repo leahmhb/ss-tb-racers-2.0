@@ -86,7 +86,7 @@ public function entry($horse_id = false, $entry_id = false, $validate = false){
     }
   }
 
-  return view('forms.entry_page', [
+  return view('pages.entry', [
     'options' => $this->getRaceDomain(Users::getPerson()['id']),
     'entry' => $entry,
     'validate' => $validate

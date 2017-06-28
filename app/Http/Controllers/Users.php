@@ -25,33 +25,6 @@ public static function user_table_data(){
 
 /*
 |--------------------------------------------------------------------------
-| ------------------------------Form Controls
-|--------------------------------------------------------------------------
-*/
-
-public function user($user_id, $validate = false){
-  $user = Model\User::where('id', $user_id)->first();
-  $persons = Model\Person::select('id','username')->orderBy('username')->get();
-  $title = 'Edit ' . $user->name;
-  $person_id = Model\Person::where('user_id', $user->id)->first()['id'];
-
-  return view('forms.user_page', [
-    'user' => $user,
-    'persons' => $persons,
-    'person_id' => $person_id,
-    'title' => $title,
-    'validate' => $validate
-    ]);
-}
-
-public function user_validate(){
- $data = $this->trimWhiteSpace($_POST);
- $user = Users::editUser($data);
- return redirect()->route('user', ['validate' => true]);
-}
-
-/*
-|--------------------------------------------------------------------------
 | ------------------------------Protected Check Controls
 |--------------------------------------------------------------------------
 */
@@ -155,25 +128,12 @@ public static function getPermissionLevel(){
   }
 }
 
-public function editUser($data){
-
- $user = Model\User::where(['id' => $data['id']])->first();
-
- $user->name = (!empty($data['name']) ? $data['name'] : '');
- $user->isAdmin = (!empty($data['isAdmin']) ? $data['isAdmin'] : '');
- $user->isJockeyClub = (!empty($data['isJockeyClub']) ? $data['isJockeyClub'] : '');
- $user->isOwner = (!empty($data['isOwner']) ? $data['isOwner'] : '');
- $user->save();
-
- $person = Model\Person::where('id', $data['person'])->first();
- $person->user_id = $user['id'];
- $person->save();
-
- return $user;
-}
-
 public static function getUsers(){
   return Model\User::select('id', 'name')->get()->toArray();
+}
+
+public static function getCurrentUser(){
+  return $user = Auth::user();
 }
 
 public static function getPerson(){
@@ -196,10 +156,6 @@ public static function getPerson(){
 }
 
 return false;
-}
-
-public static function getCurrentUser(){
-  return $user = Auth::user();
 }
 
 }

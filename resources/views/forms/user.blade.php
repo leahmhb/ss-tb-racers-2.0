@@ -1,4 +1,3 @@
-
 <input name="id" class="form-control hidden" readonly id="id" value="{{ $user['id'] }}">
 
 <div id="user_id" class="form-group">

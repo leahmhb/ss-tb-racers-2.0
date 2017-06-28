@@ -1,6 +1,6 @@
 <legend>Lineage</legend>
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-4">
     <div class="form-group">
       <label for="sire_id" class="col-sm-4 control-label">
         <small>
@@ -18,7 +18,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6">
+  <div class="col-sm-4">
     <div class="form-group">
       <label for="dam_id" class="col-sm-4 control-label">
         <small>
@@ -36,13 +36,15 @@
       </div>
     </div>
   </div>
-</div>
-
-<div class="form-group">
-  <label for="generation" class="col-sm-2 control-label">
-    Generation
-  </label>
-  <div class="col-sm-10">
-   <input type="number" name="generation" class="form-control" value="{{ $horse['generation'] }}"  placeholder="0" />
+  <div class="col-sm-4">
+    <div class="form-group">
+    <label for="generation" class="col-sm-4 control-label">
+        Generation
+      </label>
+      <div class="col-sm-8">
+       <input type="number" name="generation" class="form-control" value="{{ $horse['generation'] }}"  placeholder="0" />
+     </div>
+   </div>
  </div>
 </div>
+

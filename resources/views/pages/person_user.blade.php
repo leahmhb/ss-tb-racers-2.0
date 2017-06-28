@@ -9,9 +9,16 @@
         <div class="panel-heading">
           <h1 class="panel-title">
             {{ $title }}'s Information
+            @if($person['id'])
             <a class="icon-link pull-right" href="{{ URL::route('remove_person', $person['id']) }}">
-             <i class="fa fa-trash-o text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Remove"></i>
+              <i class="fa fa-trash-o text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Remove Person"></i>
+            </a>
+            @endif
+            @if($user['id'])
+            <a class="icon-link pull-right" href="{{ URL::route('remove_user', $user['id']) }}">
+             <i class="fa fa-trash-o text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Remove User"></i>
            </a>
+           @endif
          </h1>
        </div>
        <div class="panel-body">

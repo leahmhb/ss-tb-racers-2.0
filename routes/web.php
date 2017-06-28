@@ -44,7 +44,7 @@ Route::get('/ancestors/{horse_id}', [
 
 Route::get('/guide_getting_started', [
   'as' => 'guide_getting_started',
-  'uses' => 'Controller@guide_getting_started'])->name('guide_getting_started');
+  'uses' => 'Controller@guide_getting_started']);
 
 Route::get('/guide_breeding', [
   'as' => 'guide_breeding',

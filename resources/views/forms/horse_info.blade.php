@@ -49,38 +49,43 @@
   </div>
 </div>
 
-<div class="form-group">
-  <label for="sex" class="col-sm-2 control-label">
-    <small>
-      <i class="text-danger fa fa-asterisk" data-toggle="tooltip" data-placement="top" title="Required"></i>
-    </small>
-    Sex
-  </label>
-  <div class="col-sm-10">
-    @foreach ($domain['sexes'] as $sex)
-    <label class="radio-inline">
-      <input type="radio" name="sex" value="{{$sex['id']}}" @if($horse['sex'] == $sex['id']) checked @endif>
-      {{$sex['value']}}
-    </label>
-    @endforeach
+
+<div class="row">
+  <div class="col-sm-6">
+    <div class="form-group">
+      <label for="sex" class="col-sm-4 control-label">
+        <small>
+          <i class="text-danger fa fa-asterisk" data-toggle="tooltip" data-placement="top" title="Required"></i>
+        </small>
+        Sex
+      </label>
+      <div class="col-sm-8">
+        <select name="sex" class="form-control">
+          <option> </option>
+          @foreach ($domain['sexes'] as $s)
+          <option @if( $horse['sex'] == $s['id']) selected @endif value="{{$s['id']}}">{{$s['value']}}</option>
+          @endforeach
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="form-group">
+      <label for="grade" class="col-sm-4 control-label">
+        Breeding Status
+      </label>
+      <div class="col-sm-8">
+        <select name="breeding_status" class="form-control">
+          <option> </option>
+          @foreach ($domain['breeding_status'] as $s)
+          <option @if( $horse['breeding_status'] == $s['id']) selected @endif value="{{$s['id']}}">{{$s['value']}}</option>
+          @endforeach
+        </select>
+      </div>
+    </div>
   </div>
 </div>
 
-
-
-<div class="form-group">
-  <label for="grade" class="col-sm-2 control-label">
-    Breeding Status
-  </label>
-  <div class="col-sm-10">
-    @foreach ($domain['breeding_status'] as $breeding_status)
-    <label class="radio-inline">
-      <input type="radio" name="breeding_status" value="{{$breeding_status['id']}}" @if($horse['breeding_status'] == $breeding_status['id']) checked @endif>
-      {{ $breeding_status['value'] }}
-    </label>
-    @endforeach
-  </div>
-</div>
 
 <div class="form-group">
   <label for="grade" class="col-sm-2 control-label">
@@ -90,12 +95,14 @@
     Grade
   </label>
   <div class="col-sm-10">
-    @foreach ($domain['grades'] as $grade)
-    <label class="radio-inline">
-      <input type="radio" name="grade" value="{{$grade['id']}}" @if($horse['grade'] == $grade['id']) checked @endif>
-      {{$grade['description']}}
-    </label>
-    @endforeach
+    <select name="grade" class="form-control">
+      <option> </option>
+      @foreach ($domain['grades'] as $s)
+      <option @if( $horse['grade'] == $s['id']) selected @endif value="{{$s['id']}}">{{$s['value']}}</option>
+      @endforeach
+    </select>
+
+
   </div>
 </div>
 
@@ -198,7 +205,7 @@
   <div class="form-group">
     <label for="hexer-name" class="col-sm-2 control-label">Notes</label>
     <div class="col-sm-10">
-      <textarea class="form-control" name="notes" rows="10">{{ $horse['notes'] }}</textarea>
+    <textarea class="form-control" name="notes" rows="13">{{ $horse['notes'] }}</textarea>
     </div>
   </div>
 </fieldset>

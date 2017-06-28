@@ -98,7 +98,7 @@ public function horse($horse_id = false){
     }
   }
 
-  return view('forms.horse_page', [
+  return view('pages.horse', [
    'domain' => $this->getHorseDomain(),
    'horse' => $horse,
    'owner' => $owner,

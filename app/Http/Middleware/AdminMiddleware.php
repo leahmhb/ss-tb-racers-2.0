@@ -15,13 +15,10 @@ class AdminMiddleware{
 	 * @return mixed
 	 */
 	public function handle($request, Closure $next)	{
-/*    if ($this->auth->guest()) {
+    if (Auth::guest()) {
      return abort(401);
    }
-*/
-   if(!Auth::check()){
-     return abort(401);
-   }
+
 
    if ($request->user()->isAdmin == 1) {
     return $next($request);

@@ -17,7 +17,7 @@ class Controller extends BaseController
   use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
   public function __construct()
   {
-    $this->middleware('auth');
+
   }
 /*
 |--------------------------------------------------------------------------
@@ -32,21 +32,21 @@ public static function nav($main_active = false, $sub_active = false){
       'icon' => 'fa ',
       'url' => '/',
       'dropdown' => true,
-      'active' => false
+      'visible' => true
       ),
     'tables' => array(
       'label' => 'Tables',
       'icon' => 'fa ',
       'url' => '/',
       'dropdown' => true,
-      'active' => false
+      'visible' => true
       ),
     'forms' => array(
       'label' => 'Forms',
       'icon' => 'fa ',
       'url' => '/',
       'dropdown' => true,
-      'active' => false
+      'visible' => false
       ),
     );
 
@@ -56,37 +56,37 @@ public static function nav($main_active = false, $sub_active = false){
         'label' => 'Getting Started',
         'icon' => 'fa ',
         'url' => url('/guide_getting_started'),
-        'active' => false
+        'visible' => true
         ),
       'guide_breeding' => array(
        'label' => 'Breeding',
        'icon' => 'fa ',
        'url' => url('/guide_breeding'),
-       'active' => false
+       'visible' => true
        ),
       'guide_colors' => array(
        'label' => 'Colors',
        'icon' => 'fa ',
        'url' => url('/guide_colors'),
-       'active' => false
+       'visible' => true
        ),
       'guide_stats' => array(
         'label' => 'Stats',
         'icon' => 'fa ',
         'url' => url('/guide_stats'),
-        'active' => false
+        'visible' => true
         ),
       'guide_abilities' => array(
         'label' => 'Abilities',
         'icon' => 'fa ',
         'url' => url('/guide_abilities'),
-        'active' => false
+        'visible' => true
         ),
       'guide_form' => array(
         'label' => 'Entry Form Generator',
         'icon' => 'fa ',
         'url' => url('/guide_form'),
-        'active' => false
+        'visible' => true
         ),
       ),
     'tables' => array(
@@ -94,25 +94,25 @@ public static function nav($main_active = false, $sub_active = false){
        'label' => 'Person Table',
        'icon' => 'fa ',
        'url' => url('/person-table'),
-       'active' => false
+       'visible' => true
        ),
       'horse_table' => array(
        'label' => 'Horse Table',
        'icon' => 'fa ',
        'url' => url('/horse-table'),
-       'active' => false
+       'visible' => true
        ),
       'race_table' => array(
        'label' => 'Race Table',
        'icon' => 'fa ',
        'url' => url('/race-table'),
-       'active' => false
+       'visible' => true
        ),
       'entry_table' => array(
        'label' => 'Entry Table',
        'icon' => 'fa ',
        'url' => url('/entry-table'),
-       'active' => false
+       'visible' => true
        ),
       ),
     'forms' => array(
@@ -120,34 +120,38 @@ public static function nav($main_active = false, $sub_active = false){
        'label' => 'Create Person',
        'icon' => 'fa ',
        'url' => url('/person'),
-       'active' => false
+       'visible' => true
        ),
       'horse' => array(
        'label' => 'Create Horse',
        'icon' => 'fa ',
        'url' => url('/horse'),
-       'active' => false
+       'visible' => true
        ),
       'race' => array(
        'label' => 'Create Race',
        'icon' => 'fa ',
        'url' => url('/race'),
-       'active' => false
+       'visible' => true
        ),
       'entry' => array(
        'label' => 'Create Entry',
        'icon' => 'fa ',
        'url' => url('/entry'),
-       'active' => false
+       'visible' => true
        ),
       ),
     );
 
-  return array(
+  $nav = array(
     'mainbar'=> $mainbar,
     'subbar'=>$subbar
     );
 
+  $nav['mainbar']['forms']['visible'] = true;
+  $nav['person'] = Users::getPerson();
+
+  return $nav;
 }
 /*
 |--------------------------------------------------------------------------

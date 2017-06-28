@@ -15,7 +15,7 @@ class JockeyClubMiddleware{
    * @return mixed
    */
   public function handle($request, Closure $next) {
-    if ($this->auth->guest()) {
+    if (Auth::guest()) {
      return abort(401);
    }
 

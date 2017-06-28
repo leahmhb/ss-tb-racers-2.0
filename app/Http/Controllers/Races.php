@@ -68,7 +68,7 @@ public function race($race_id = false, $validate = false){
     }
   }
 
-  return view('forms.race_page', [
+  return view('pages.race', [
     'race' => $race,
     'options' => $this->getRaceDomain('%'),
     'title' => $title,
